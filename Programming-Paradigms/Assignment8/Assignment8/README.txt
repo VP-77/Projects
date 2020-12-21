@@ -7,9 +7,7 @@ Time is a Python library that provides various time-related functions.
 
 Use the package manager [pip](https://pip.pypa.io/en/stable/) to install Pygame
 
-```bash
 pip install pygame
-```
 
 ## Description
 
