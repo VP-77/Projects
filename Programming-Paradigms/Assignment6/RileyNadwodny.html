@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Riley Nadwodny's Page</title>
+    <style>
+        body {background-color: #FF9445;}
+    </style>
+    <script type="text/javascript">
+
+        function resetQuiz()
+        {
+            var ele = document.getElementsByName("q1");
+            for(var i=0;i<ele.length;i++)
+                ele[i].checked = false;
+
+            ele = document.getElementsByName("q2");
+            for(var i=0;i<ele.length;i++)
+                ele[i].checked = false;
+
+            ele = document.getElementsByName("q3");
+            for(var i=0;i<ele.length;i++)
+                ele[i].checked = false;
+
+            document.getElementById("divAnswer1").style.display = "none";
+            document.getElementById("divAnswer2").style.display = "none";
+            document.getElementById("divAnswer3").style.display = "none";
+
+            alert("Quiz has been reset");
+        }
+
+        function onClickq1()
+        {
+            if(document.getElementById("SKT").checked)
+            {
+                document.getElementById("divAnswer1").innerHTML = "Correct!";
+            }
+            else {
+                document.getElementById("divAnswer1").innerHTML = "Incorrect!";
+            }
+        }
+
+        function onClickq2()
+        {
+            if(document.getElementById("SSG").checked)
+            {
+                document.getElementById("divAnswer2").innerHTML = "Correct!";
+            }
+            else {
+                document.getElementById("divAnswer2").innerHTML = "Incorrect!";
+            }
+
+        }
+
+        function onClickq3()
+        {
+            if(document.getElementById("Real").checked)
+            {
+                document.getElementById("divAnswer3").innerHTML = "Correct!";
+            }
+            else {
+                document.getElementById("divAnswer3").innerHTML = "Incorrect!";
+            }
+
+        }
+    </script>
+    <h1>Riley Nadwodny's Page</h1>
+</head>
+
+<body>
+<h3>
+The quiz on this page is about the history of the League of Legends World Championships. This year was the 10th anniversity of Worlds with continuing regional storylines,
+the rise of new champions, and the fall of regional favorites. Riot prides themselves on holding Worlds in a new location every year, from California, USA to Seoul, South Korea and Shangai, China.
+This webpage contains a quiz about Worlds 2020. You can click <a href="https://lol.gamepedia.com/World_Championship" target="_blank">here</a> for a webpage with all the necessary info about Worlds 2020 to answer this quiz. GLHF!
+</h3>
+<p>
+    Who has won more World Championships?
+    <br/>
+    <input type="radio" name="q1" id="SKT" value="SKT" onclick="onClickq1()"> SK Telecom T1
+    <input type="radio" name="q1" id="Fnatic" value="Fnatic" onclick="onClickq1()"> Fnatic
+    <div id="divAnswer1"></div>
+</p>
+<p>
+    Who won Worlds 2017?
+    <br/>
+    <input type="radio" name="q2" id="SSG" value="SSG" onclick="onClickq2()"> Samsung Galaxy
+    <input type="radio" name="q2" id="SKT" value="SKT" onclick="onClickq2()"> SK Telecom T1
+    <div id="divAnswer2"></div>
+</p>
+<p>
+    Which trophy is the real Summoner's Cup?
+    <br/>
+    <input type="radio" name="q3" id="Real" value="Real" onclick="onClickq3()">
+    <label for="Real"><img src="./summoner2.jpg"></label>
+    <input type="radio" name="q3" id="Fake" value="Fake" onclick="onClickq3()">
+    <label for="Fake"><img src="./summoner3.jpg" width=337 height=500></label>
+    <div id="divAnswer3"></div>
+</p>
+<input type="button" onclick="resetQuiz();" value="Reset Quiz">
+</body>
+
+</html>

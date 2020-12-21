@@ -1,0 +1,16 @@
+File to read in: sample1.txt
+Words read in.
+File read successfully.
+Reading difficulty of sample1.txt is: 288.31.
+
+rjnadwod@turing:~/Project3$ ./project3.exe
+File to read in: sample2.txt
+Words read in.
+File read successfully.
+Reading difficulty of sample2.txt is: 378.488.
+
+rjnadwod@turing:~/Project3$ ./project3.exe
+File to read in: words.txt
+Words read in.
+File read successfully.
+Reading difficulty of words.txt is: 753.527.

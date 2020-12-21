@@ -1,0 +1,21 @@
+Script started on Wed 04 Mar 2020 08:52:53 AM CST
+]0;rjnadwod@turing: ~/Project3rjnadwod@turing:~/Project3$ g++ -Wall *.cpp -o project3.exe
+]0;rjnadwod@turing: ~/Project3rjnadwod@turing:~/Project3$ ./project3.exe
+File to read in: smaple1.t        ample1.txt
+Words read in.
+File read successfully.
+Reading difficulty of sample1.txt is: 288.31.
+]0;rjnadwod@turing: ~/Project3rjnadwod@turing:~/Project3$ ./project3.exeg++ -Wall *.cpp -o project3.exe[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[17P./project3.exe
+File to read in: sample2.txt
+Words read in.
+File read successfully.
+Reading difficulty of sample2.txt is: 378.488.
+]0;rjnadwod@turing: ~/Project3rjnadwod@turing:~/Project3$ ./project3.exe
+File to read in: words.txt
+Words read in.
+File read successfully.
+Reading difficulty of words.txt is: 753.527.
+]0;rjnadwod@turing: ~/Project3rjnadwod@turing:~/Project3$ exit
+exit
+
+Script done on Wed 04 Mar 2020 08:53:23 AM CST

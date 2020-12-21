@@ -1,0 +1,4 @@
+﻿  Project4.cpp
+C:\Users\rjn98\OneDrive\Documents\UARK\CSCE 2004\Project4\Project4.cpp(339,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\rjn98\OneDrive\Documents\UARK\CSCE 2004\Project4\Project4.cpp(351,35): warning C4244: 'argument': conversion from 'double' to 'const int', possible loss of data
+  Project4.vcxproj -> C:\Users\rjn98\OneDrive\Documents\UARK\CSCE 2004\Project4\Debug\Project4.exe

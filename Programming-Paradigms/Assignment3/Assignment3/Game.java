@@ -1,0 +1,60 @@
+/*
+/ Name: Riley Nadwodny
+/ Date: 9/11/2020
+/ Description: This class initializes the Game itself. It creates a new
+/ model, controller, and view. It sets the size, title, adds a key and mouse
+/ listener, and a run function. While the game is run, it updates the
+/ controller and model, as well as repaints the view.
+*/
+
+import javax.swing.JFrame;
+import java.awt.Toolkit;
+
+public class Game extends JFrame
+{
+    
+    Model model;
+    Controller controller;
+    View view;
+    
+	public Game()
+	{
+                this.model = new Model();
+                this.controller = new Controller(model);
+                this.view = new View(controller, model);
+                view.addMouseListener(controller);
+                this.addKeyListener(controller);
+		this.setTitle("Tubes!");
+		this.setSize(500, 500);
+		this.setFocusable(true);
+		this.getContentPane().add(view);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
+	}
+        
+        public void run()
+{
+	while(true)
+	{
+		controller.update(view);
+		model.update();
+		view.repaint(); // Indirectly calls View.paintComponent
+		Toolkit.getDefaultToolkit().sync(); // Updates screen
+
+		// Go to sleep for 40 miliseconds
+		try
+		{
+			Thread.sleep(40);
+		} catch(Exception e) {
+			e.printStackTrace();
+			System.exit(1);
+		}
+	}
+}
+
+	public static void main(String[] args)
+	{
+		Game g = new Game();
+                g.run();
+	}
+}

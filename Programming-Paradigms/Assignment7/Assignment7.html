@@ -1,0 +1,734 @@
+<head>
+	<title>Mario Yeets!</title>
+	<meta charset="UTF-8">
+</head>
+<body>
+	<h1>Super JavaScript Mario!</h1>
+<br>
+<canvas id="myCanvas" width="1000" height="500" style="border:1px solid #cccccc;"></canvas>
+
+<script type="text/javascript">
+
+class Sprite
+{
+	//constructor(x, y, width, height, image_url, update_method, onclick_method, type)
+	constructor(x, y, image_url)
+	{
+		this.x = x;
+		this.y = y;
+		this.image = new Image();
+		this.image.src = image_url;
+	}
+
+	set_destination(x, y)
+	{
+		this.dest_x = x;
+		this.dest_y = y;
+	}
+
+	ignore_click(x, y)
+	{
+	}
+
+	move(dx, dy)
+	{
+		this.dest_x = this.x + dx;
+		this.dest_y = this.y + dy;
+	}
+
+	go_toward_destination()
+	{
+		if(this.dest_x === undefined)
+			return;
+
+		if(this.x < this.dest_x)
+			this.x++;
+		else if(this.x > this.dest_x)
+			this.x--;
+		if(this.y < this.dest_y)
+			this.y++;
+		else if(this.y > this.dest_y)
+			this.y--;
+	}
+
+	onclick(x, y)
+	{}
+
+	sit_still()
+	{}
+
+	update()
+	{}
+
+	savePrev()
+	{}
+
+}
+
+
+
+
+
+class Model
+{
+	//Create the map
+	constructor()
+	{
+		this.sprites = [];
+		this.mario = new Mario(100, 300, "mario3.png");
+		this.sprites.push(this.mario);
+		this.sprites.push(new Tube(300, 300, "tube.png"));
+		this.sprites.push(new Tube(600, 300, "tube.png"));
+		this.sprites.push(new Goomba(480, 355, "goomba.png", this));
+	}
+
+	//Update sprites and do collision detection
+	update()
+	{
+		for(let i = 0; i < this.sprites.length; i++)
+		{
+			this.sprites[i].update();
+			//If sprite is a tube, check for collision between tube and other sprites
+			if (this.sprites[i] instanceof Tube)
+			{
+				for (let j = 0; j < this.sprites.length; j++)
+				{
+					if (this.sprites[j] instanceof Goomba)
+						this.sprites[j].tubeCollision(this.sprites[i]);
+					if (this.sprites[j] instanceof Fireball)
+						this.sprites[j].tubeCollision(this.sprites[i]);
+					if (this.sprites[j] instanceof Mario)
+						this.sprites[j].tubeCollision(this.sprites[i]);
+				}
+			}
+			//If sprite is a fireball, check for collision between Goomba and Fireball
+			if (this.sprites[i] instanceof Fireball)
+			{
+				var ball = this.sprites[i];
+				for (let j = 0; j < this.sprites.length; j++)
+				{
+					if (this.sprites[j] instanceof Goomba)
+					{
+						var goom = this.sprites[j];
+						this.goombaCollision(goom, ball);
+					}
+				}
+				//Check to see if Fireball should be removed
+				this.removeFireball(ball);
+			}
+		}
+	}
+
+	//Onclick for adding tubes
+	onclick(x, y)
+	{
+		for(let i = 0; i < this.sprites.length; i++)
+		{
+			if(this.sprites[i].type == "tube")
+				this.sprites[i].onclick(x, y);
+		}
+	}
+	
+	//Function to add and remove tubes - not active
+	addTube(mouse_x, mouse_y)
+	{
+		this.tube = null;
+
+		for(let i = 0; i < this.sprites.length; i++)
+		{
+			if(this.sprites[i] instanceof Tube)
+			{
+				this.temp = new Tube(this.sprites[i].x, this.sprites[i].y, "tube.png");
+				if(this.temp.tubeClicked(mouse_x, mouse_y))
+				{
+					this.tube = this.temp;
+					this.sprites.splice(i, 1);
+				}
+			}
+		}
+
+		if (this.tube === null)
+		{
+			this.sprites.push(new Tube(mouse_x, mouse_y, "tube.png"));
+		}
+	}
+
+	//Function to add goomba - not active
+	addGoomba(mouse_x, mouse_y)
+	{
+		this.sprites.push(new Goomba(mouse_x, mouse_y, "goomba.png"));
+	}
+
+	//Add fireball from Mario's x
+	addFireball(x, y)
+	{
+		this.sprites.push(new Fireball(x, y, "fireball.png", Model));
+	}
+
+	//Remove fireball from sprites array
+	removeFireball(s)
+	{
+		var fire = s;
+		var index = this.sprites.indexOf(fire);
+		if((fire.x > (this.mario.x + 900)) || (fire.x < this.mario.x - 200))
+			this.sprites.splice(index, 1);
+	}
+
+	//Check for goomba and fireball collision
+	goombaCollision(g, f)
+    {
+        //Store goomba sprite into g, fireball sprite into f. Set collision to true by default
+        var goom = g;
+        var fire = f;
+		var collision = true;
+
+        //Check left, right, top, and bottom of goomba.
+        if ((fire.x + fire.width) < goom.x)
+                collision = false;
+        if (fire.x > (goom.x + goom.width))
+                collision = false;
+        if ((fire.y + fire.height) < goom.y)
+                collision = false;
+        if (fire.y > (goom.y + goom.height))
+            collision = false;
+        
+        //If collision is true, remove this fireball and set goomba's onFire boolean to true.
+        if (collision == true)
+        {
+			var index = this.sprites.indexOf(fire);
+			this.sprites.splice(index, 1);
+			goom.onFire = true;
+        }
+	}
+}
+
+
+
+
+
+class View
+{
+	//Construct view
+	constructor(model, controller)
+	{
+		this.model = model;
+		this.controller = controller;
+		this.canvas = document.getElementById("myCanvas");
+	}
+
+	//Update view
+	update()
+	{
+		let ctx = this.canvas.getContext("2d");
+		//draw canvas, fill with blue for sky
+		ctx.rect(0, 0, 1000, 500);
+		ctx.fillStyle = "#87CEFA";
+		ctx.fill();
+		//draw Mario
+		ctx.drawImage(this.model.mario.marioImages[this.model.mario.marioImageNum], this.model.mario.marioLocation, this.model.mario.y);
+		for(let i = 1; i < this.model.sprites.length; i++)
+		{
+			//draw each sprite individually
+			let sprite = this.model.sprites[i];
+			if (sprite instanceof Fireball)
+			{
+				ctx.drawImage(sprite.image, (sprite.x - this.model.mario.x + this.model.mario.marioLocation), sprite.y);
+			}
+			if (sprite instanceof Goomba)
+				ctx.drawImage(sprite.image, sprite.x - (this.model.mario.x - 100), sprite.y);
+			if (sprite instanceof Tube)
+				ctx.drawImage(sprite.image, sprite.x - (this.model.mario.x - this.model.mario.marioLocation), sprite.y);
+		}
+		//draw and fill the ground
+		ctx.fillStyle = "#7CFC00";
+		ctx.fillRect(-5000, 400, 50000, 100);
+	}
+}
+
+
+
+
+
+class Controller
+{
+	//Construct controller
+	constructor(model, view)
+	{
+		this.model = model;
+		this.view = view;
+		this.key_right = false;
+		this.key_left = false;
+		this.key_up = false;
+		this.key_down = false;
+		this.key_space = false;
+		this.key_ctrl = false;
+		this.addTubesEditor = false;
+		this.addGoombasEditor = false;
+		let self = this;
+		view.canvas.addEventListener("click", function(event) { self.onClick(event); });
+		document.addEventListener('keydown', function(event) { self.keyListener(event); }, false);
+		document.addEventListener('keyup', function(event) { self.keyListener(event); }, false);
+	}
+
+	onClick(event)
+	{
+		this.model.onclick(event.pageX + this.model.mario.x - 100, event.pageY - this.view.canvas.offsetTop);
+	}
+
+	keyListener(event)
+	{
+		var key_state = (event.type == "keydown")?true:false;
+
+		switch(event.keyCode)
+		{
+			//Shoots 2 fireballs at a time, or hold down to shoot an endless string of fireballs
+			case 17:
+				this.key_ctrl = key_state;
+				this.model.addFireball(this.model.mario.x + 60, this.model.mario.y + 60);
+				break;
+			case 37:
+				this.key_left = key_state;
+				break;
+			case 38:
+				this.key_up = key_state;
+				break;
+			case 39:
+				this.key_right = key_state;
+				break;
+		}
+	}
+
+	update()
+	{
+		for (let i = 0; i < this.model.sprites.length; i++)
+			this.model.sprites[i].savePrev();
+		if(this.key_right) 
+		{
+			this.model.mario.x += 3.5;
+		}
+		if(this.key_left) 
+		{
+			this.model.mario.x -= 3.5;
+		}
+		if(this.key_up && this.model.mario.jumping == false)
+		{
+			this.model.mario.jump();
+		}
+		if((this.key_right || this.key_left || this.key_up) == false)
+            this.model.mario.marioImageNum = 1;
+	}
+}
+
+
+
+
+
+class Game
+{
+	constructor()
+	{
+		this.model = new Model();
+		this.view = new View(this.model);
+		this.controller = new Controller(this.model, this.view);
+	}
+
+	onTimer()
+	{
+		this.controller.update();
+		this.model.update();
+		this.view.update();
+	}
+}
+
+
+
+
+
+class Tube extends Sprite
+{
+	//Construct tube
+	constructor(x, y, image_url)
+	{
+		super(x, y, image_url);
+		this.width = 55;
+		this.height = 400;
+		this.image = new Image();
+		if (this.image.src === "")
+			this.image.src = "tube.png";
+	}
+
+	update()
+	{}
+
+	//Check to see if tube has been clicked on
+	tubeClicked(mouse_x, mouse_y)
+	{
+		this.mouse_x = mouse_x;
+		this.mouse_y = mouse_y;
+
+		if (this.mouse_x < this.x)
+           return false;
+        if (this.mouse_x > this.x + this.width)
+            return false;
+        if (this.mouse_y < this.y)
+            return false;
+        if (this.mouse_y > this.y + this.height)
+            return false;
+        return true;
+	}
+
+	isTube()
+	{
+		return true;
+	}
+}
+
+
+
+
+
+class Goomba extends Sprite
+{
+	//Construct Goomba
+	constructor(x, y, image_url, model)
+	{
+		super(x, y, image_url);
+		this.width = 37;
+		this.height = 44;
+		this.image = new Image();
+		this.onFire = false;
+		this.model = model;
+		if (this.image.src === "")
+			this.image.src = "goomba.png";
+		this.frames = 0;
+	}
+
+	isGoomba()
+	{
+		return true;
+	}
+
+	//Update Goomba
+	update()
+	{
+		//Flip variable to move left or right
+		var flip = false;
+		//Make Goomba fall to ground if spawned in the air
+		this.verticalVelocity = 3.6;
+		this.verticalVelocity += 3.6;
+		this.y += this.verticalVelocity;
+
+		//Don't allow Goomba to fall under the ground
+		if (this.y > (400 - this.height))
+		{
+			this.verticalVelocity = 0;
+			this.y = (400 - this.height);
+		}
+
+		//Don't allow Goomba to go off the top of the screen
+		if (this.y < 0)
+			this.y = 0;
+
+		//Move Goomba left or right
+		if (!this.flip)
+			this.x += 4;
+		if (this.flip)
+			this.x -= 4;
+
+		//Set Goomba on fire if collision between fireball and goomba has been detected.
+		//Remove after a certain amount of time
+		if (this.onFire == true)
+		{
+			this.image.src = "goomba_fire.png";
+			this.frames++;
+			if (this.frames == 75)
+			{
+				this.model.sprites.splice(this.model.sprites.indexOf(this), 1);
+			}
+		}
+			
+	}
+
+	//Check for collision between tube and goomba
+	tubeCollision(s)
+	{
+		var sprite = s;
+		var collision = true;
+
+		if ((this.x + this.width) < sprite.x)
+			collision = false;
+		if (this.x > (sprite.x + sprite.width))
+			collision = false;
+		if ((this.y + this.height) < sprite.y)
+			collision = false;
+		if (this.y > (sprite.y + sprite.height))
+			collision = false;
+
+		if (collision == true)
+		{
+			this.getOutOfTube(sprite);
+			this.flip = !this.flip;
+		}
+	}
+
+	//Get Goomba out of tube
+	getOutOfTube(s)
+	{
+		var tube = s;
+		//left side
+		if (((this.x + this.width) > tube.x) && ((this.px + this.width) < tube.x))
+		{
+			this.x = tube.x - (this.width-1);
+		}
+		//right hand side of tube
+        if ((this.x <= (tube.x + tube.width)) && (this.px > (tube.x + tube.width)))
+			this.x = tube.x + tube.width+1;
+        //above the tube
+        if (((this.y + this.height) >= tube.y) && ((this.py + this.height) < tube.y))
+        {
+            this.y = tube.y - this.height-1;
+        }
+        //below the tube
+        if ((this.y <= (tube.y + tube.height)) && (this.py > (tube.y + tube.height)))
+			this.y = tube.y + this.height+1;
+	}
+
+	//Save previous coordinates of Goomba for collision detection
+	savePrev()
+	{
+		this.px = this.x;
+		this.py = this.y;
+	}
+
+}
+
+
+
+
+class Fireball extends Sprite
+{
+	//Fireball constructor
+	constructor(x, y, image_url, model)
+	{
+		super(x, y, image_url);
+		this.width = 47;
+		this.height = 47;
+		this.image = new Image();
+		this.model = model;
+		if (this.image.src === "")
+			this.image.src = "fireball.png";
+		this.verticalVelocity = 0;
+	}
+
+	isFireball()
+	{
+		return true;
+	}
+
+	//Update fireball
+	update()
+	{
+		//Variable to move left or right
+		var flip = false;
+		//Add gravity and bounce to fireball
+		this.verticalVelocity += 1.2;
+		this.y += this.verticalVelocity;
+		this.y -= 6;
+
+		//Don't allow Fireball to drop under the ground
+		if (this.y > (400 - this.height))
+		{
+			this.verticalVelocity = 0;
+			this.y = (400 - this.height);
+		}
+
+		//Don't allow Fireball to go off the top of the screen
+		if (this.y < 0)
+			this.y = 0;
+
+		//Move Fireball left or right on the screen depending on flip variable
+		if (!this.flip)
+			this.x += 6;
+		if (this.flip)
+			this.x -= 6;
+	}
+
+	//Check for collision between Tube and Fireball
+	tubeCollision(s)
+	{
+		var sprite = s;
+		var collision = true;
+
+		if ((this.x + this.width) < sprite.x)
+			collision = false;
+		if (this.x > (sprite.x + sprite.width))
+			collision = false;
+		if ((this.y + this.height) < sprite.y)
+			collision = false;
+		if (this.y > (sprite.y + sprite.height))
+			collision = false;
+
+		if (collision == true)
+		{
+			this.getOutOfTube(sprite);
+			this.flip = !this.flip;
+		}
+	}
+
+	//Get Fireball out of tube if colliding
+	getOutOfTube(s)
+	{
+		var tube = s;
+		//left side
+		if (((this.x + this.width) > tube.x) && ((this.px + this.width) < tube.x))
+		{
+			this.x = tube.x - (this.width-1);
+		}
+		//right hand side of tube
+        if ((this.x <= (tube.x + tube.width)) && (this.px > (tube.x + tube.width)))
+			this.x = tube.x + tube.width+1;
+        //above the tube
+        if (((this.y + this.height) >= tube.y) && ((this.py + this.height) < tube.y))
+        {
+            this.y = tube.y - this.height-1;
+        }
+        //below the tube
+        if ((this.y <= (tube.y + tube.height)) && (this.py > (tube.y + tube.height)))
+			this.y = tube.y + this.height+1;
+	}
+}
+
+
+
+
+
+class Mario extends Sprite
+{
+	//Construct Mario
+	constructor(x, y, image_url, type)
+	{
+		super(x, y, image_url, type);
+		this.width = 60;
+		this.height = 95;
+		this.marioImageNum = 0;
+		this.verticalVelocity = 12.0;
+		this.marioLocation = 100;
+		this.jumping = false;
+		this.jumps = 0;
+		
+		//Image array of Mario images
+		this.marioImages = [];
+		this.marioImages.push(new Image());
+		this.marioImages[0].src = "mario1.png";
+		this.marioImages.push(new Image());
+		this.marioImages[1].src = "mario2.png";
+		this.marioImages.push(new Image());
+		this.marioImages[2].src = "mario3.png";
+		this.marioImages.push(new Image());
+		this.marioImages[3].src = "mario4.png";
+		this.marioImages.push(new Image());
+		this.marioImages[4].src = "mario5.png";
+	}
+
+	//Save Mario's previous x and y for Collision detection
+	savePrev()
+	{
+		this.px = this.x;
+		this.py = this.y;
+	}
+
+	//Allow Mario to jump
+	jump()
+	{
+		if (this.jumps < 5)
+			this.verticalVelocity = this.verticalVelocity - 5;
+	}
+
+	//Update Mario
+	update()
+	{
+		//Allow Mario to jump
+		this.jumps++;
+
+		//Animate Mario
+		this.marioImageNum++;
+
+		//Give Mario gravity
+		this.verticalVelocity += 1.2;
+		this.y += this.verticalVelocity
+
+		//Don't allow Mario to fall under the ground. Set jumping false to allow the ability to jump.
+		if (this.y > 400-this.height)
+		{
+			this.verticalVelocity = 0;
+			this.y = 400 - this.height;
+			this.jumps = 0;
+			this.jumping = false;
+		}
+
+		//Don't allow Mario to go off the top of the screen
+		if (this.y < 0)
+			this.y = 0;
+
+		//Cycle through the array of Mario images properly
+		if (this.marioImageNum > 4)
+			this.marioImageNum = 0;
+	}
+
+	onclick()
+	{}
+
+	getOutOfTube(tube)
+	{
+		//left side
+		if (((this.x + this.width) >= tube.x) && ((this.px + this.width) < tube.x)) //maybe use <= and >=
+			this.x = tube.x - this.width-1;
+		//right hand side of tube
+        if ((this.x <= (tube.x + tube.width)) && (this.px > (tube.x + tube.width)))
+			this.x = tube.x + tube.width+1;
+        //above the tube
+        if (((this.y + this.height) >= tube.y) && ((this.py + this.height) < tube.y))
+        {
+            this.y = tube.y - this.height-1;
+            this.jumps = 0;
+			this.jumping = false;
+        }
+        //below the tube
+        if ((this.y <= (tube.y + tube.height)) && (this.py > (tube.y + tube.height)))
+			this.y = tube.y + this.height+1;
+	}
+
+	//Detect Collision between Mario and Tube
+	tubeCollision(sprite)
+	{
+		//Boolean to detect collision
+		let collisions = true;
+
+		if ((this.x+this.width) < sprite.x)
+			collisions = false;
+		if (this.x > (sprite.x + sprite.width))
+			collisions = false;
+		if ((this.y + this.height) < sprite.y)
+			collisions = false;
+		if (this.y > (sprite.y + sprite.height))
+			collisions = false;
+
+		//If collision variable is still true, get Mario out of the tube
+		//and set velocity to 0 so he doesn't fall through the top of the tube.
+		if (collisions == true)
+		{
+			this.getOutOfTube(sprite);
+			this.verticalVelocity = 0;
+		}
+	}
+}
+
+
+
+
+let game = new Game();
+let timer = setInterval(function() { game.onTimer(); }, 40);
+
+</script>
+
+</body>

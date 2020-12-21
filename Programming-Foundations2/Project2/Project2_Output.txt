@@ -1,0 +1,203 @@
+Welcome to the GroupMe user list!
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: a
+First name: Riley
+Last name: Nadwodny
+Username: rjnadwod
+Phone number: 123-456-7890
+User message count: 100
+
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: a
+First name: Parker
+Last name: Weber
+Username: psweber
+Phone number: 0987-654-321
+User message count: 55
+
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: a
+First name: Zach
+Last name: Gainsz
+Username: zgainsz
+Phone number: 111-222-333
+User message count: 105
+
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: a
+First name: Daniel
+Last name: Meow
+Username: dmeow
+Phone number: 23
+User message count: 23
+
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: c
+Name: Zach Gainsz
+User: zgainsz
+Phone Number: 111-222-333
+Message Count: 105
+
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: a
+First name: Bob
+Last name: Jeans
+Username: bjeans
+Phone number: 111-043-3231
+User message count: 500
+
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: d
+Name: Riley Nadwodny
+User: rjnadwod
+Phone Number: 123-456-7890
+Message Count: 100
+
+Name: Parker Weber
+User: psweber
+Phone Number: 0987-654-321
+Message Count: 55
+
+Name: Zach Gainsz
+User: zgainsz
+Phone Number: 111-222-333
+Message Count: 105
+
+Name: Daniel Meow
+User: dmeow
+Phone Number: 23
+Message Count: 23
+
+Name: Bob Jeans
+User: bjeans
+Phone Number: 111-043-3231
+Message Count: 500
+
+Number of users in group: 5
+Total messages sent in group: 783
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: a
+First name: Jimbo
+Last name: American
+Username: jamerican
+Phone number: 444-555-6666
+User message count: 800
+
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: c
+Name: Jimbo American
+User: jamerican
+Phone Number: 444-555-6666
+Message Count: 800
+
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: a
+First name: Suzy
+Last name: English
+Username: senglish
+Phone number: 555-666-7777
+User message count: 42
+
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: d
+Name: Riley Nadwodny
+User: rjnadwod
+Phone Number: 123-456-7890
+Message Count: 100
+
+Name: Parker Weber
+User: psweber
+Phone Number: 0987-654-321
+Message Count: 55
+
+Name: Zach Gainsz
+User: zgainsz
+Phone Number: 111-222-333
+Message Count: 105
+
+Name: Daniel Meow
+User: dmeow
+Phone Number: 23
+Message Count: 23
+
+Name: Bob Jeans
+User: bjeans
+Phone Number: 111-043-3231
+Message Count: 500
+
+Name: Jimbo American
+User: jamerican
+Phone Number: 444-555-6666
+Message Count: 800
+
+Name: Suzy English
+User: senglish
+Phone Number: 555-666-7777
+Message Count: 42
+
+Number of users in group: 7
+Total messages sent in group: 1625
+Please select a command:
+    a - Add user
+    b - Update user message count
+    c - Find user with the largest message count
+    d - Print user list
+    e - Exit program
+Please select your command now: e
+Thank you for using this program! Exiting program now.
+RUN SUCCESSFUL (total time: 2m 26s)
